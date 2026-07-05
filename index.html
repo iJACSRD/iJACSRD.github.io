@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iJACS</title>
+<meta name="description" content="Junior — explorando retos, hobbies y experiencias nuevas.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Special+Elite&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#1B2A3A;
+    --ink-soft:#2C3E50;
+    --parchment:#E8E0C9;
+    --parchment-dark:#DCD2B4;
+    --rust:#B23A2E;
+    --gold:#B8863B;
+    --moss:#4B5842;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(0,0,0,0.035) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(0,0,0,0.035) 0%, transparent 40%),
+      var(--parchment);
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:0 0 64px;
+  }
+
+  /* subtle paper grain */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:0.5;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, transparent 1px, transparent 2px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.015) 0px, transparent 1px, transparent 2px);
+  }
+
+  .page{
+    width:100%;
+    max-width:460px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ===== Cover band ===== */
+  .cover{
+    background:var(--ink);
+    color:var(--parchment);
+    padding:38px 28px 30px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .cover::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:6px;
+    background:repeating-linear-gradient(
+      90deg,
+      var(--gold) 0 14px,
+      transparent 14px 22px
+    );
+    opacity:0.8;
+  }
+
+  .cover-eyebrow{
+    font-family:'Special Elite', monospace;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 10px;
+  }
+
+  .cover h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:700;
+    font-size:56px;
+    letter-spacing:0.02em;
+    margin:0;
+    line-height:1;
+  }
+
+  .cover p{
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    color:#C9D2DA;
+    margin:14px auto 0;
+    max-width:300px;
+    line-height:1.5;
+  }
+
+  .flag{
+    display:inline-block;
+    margin-top:14px;
+    font-size:13px;
+    letter-spacing:0.05em;
+    color:var(--parchment);
+    opacity:0.75;
+  }
+
+  /* ===== Current entry stamp ===== */
+  .entry-wrap{
+    padding:28px 24px 6px;
+  }
+
+  .entry{
+    border:1.5px dashed rgba(27,42,58,0.35);
+    border-radius:4px;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:rgba(255,255,255,0.25);
+  }
+
+  .entry-stamp{
+    flex:0 0 auto;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    border:2px solid var(--rust);
+    color:var(--rust);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    transform:rotate(-8deg);
+    mix-blend-mode:multiply;
+    opacity:0.85;
+  }
+
+  .entry-text .label{
+    font-family:'Special Elite', monospace;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--rust);
+    margin:0 0 3px;
+  }
+
+  .entry-text .title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    margin:0;
+  }
+
+  .entry-text .sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:2px 0 0;
+    opacity:0.75;
+  }
+
+  /* ===== Links (stamped tickets) ===== */
+  .links{
+    padding:22px 24px 8px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .ticket{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:#F3EEDE;
+    border:1px solid rgba(27,42,58,0.14);
+    border-radius:2px;
+    padding:16px 18px;
+    text-decoration:none;
+    color:var(--ink);
+    position:relative;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow:0 1px 0 rgba(27,42,58,0.06);
+  }
+
+  .ticket:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 14px rgba(27,42,58,0.12);
+  }
+
+  .ticket:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:3px;
+  }
+
+  /* perforation edge */
+  .ticket::before{
+    content:"";
+    position:absolute;
+    left:64px;
+    top:0;
+    bottom:0;
+    width:0;
+    border-left:1.5px dashed rgba(27,42,58,0.22);
+  }
+
+  .ticket-badge{
+    flex:0 0 auto;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:#F3EEDE;
+  }
+
+  .ticket-text{
+    flex:1;
+    padding-left:4px;
+  }
+
+  .ticket-text .name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:16px;
+    margin:0;
+  }
+
+  .ticket-text .desc{
+    font-size:12px;
+    color:var(--ink-soft);
+    opacity:0.7;
+    margin:2px 0 0;
+  }
+
+  .ticket-arrow{
+    font-family:'Special Elite', monospace;
+    font-size:14px;
+    opacity:0.4;
+  }
+
+  /* ===== Footer ===== */
+  .footer{
+    text-align:center;
+    padding:26px 24px 0;
+  }
+
+  .footer p{
+    font-family:'Special Elite', monospace;
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    opacity:0.55;
+    margin:0;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .ticket{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="cover">
+    <p class="cover-eyebrow">Bitácora de exploración</p>
+    <h1>iJACS</h1>
+    <p>Junior — retos, vlogs, comida y todo lo que se me ocurra probar. Documentando el proceso, no solo el resultado.</p>
+    <div class="flag">🇩🇴 República Dominicana</div>
+  </div>
+
+  <div class="entry-wrap">
+    <div class="entry">
+      <div class="entry-stamp">🪢</div>
+      <div class="entry-text">
+        <p class="label">Entrada activa</p>
+        <p class="title">Reto: Saltar cuerda</p>
+        <p class="sub">Día 1 de 30 · Empezó hoy</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="links">
+
+    <a class="ticket" href="https://instagram.com/iJACSRD" target="_blank" rel="noopener">
+      <div class="ticket-badge" style="background:var(--rust);">📸</div>
+      <div class="ticket-text">
+        <p class="name">Instagram</p>
+        <p class="desc">@iJACSRD</p>
+      </div>
+      <div class="ticket-arrow">↗</div>
+    </a>
+
+    <a class="ticket" href="https://facebook.com/iJACSRD" target="_blank" rel="noopener">
+      <div class="ticket-badge" style="background:var(--ink);">📘</div>
+      <div class="ticket-text">
+        <p class="name">Facebook</p>
+        <p class="desc">iJACSRD</p>
+      </div>
+      <div class="ticket-arrow">↗</div>
+    </a>
+
+    <a class="ticket" href="https://www.tiktok.com/@ijacsrd" target="_blank" rel="noopener">
+      <div class="ticket-badge" style="background:#000;">🎵</div>
+      <div class="ticket-text">
+        <p class="name">TikTok</p>
+        <p class="desc">@ijacsrd</p>
+      </div>
+      <div class="ticket-arrow">↗</div>
+    </a>
+
+    <a class="ticket" href="https://youtube.com/@iJACSRD" target="_blank" rel="noopener">
+      <div class="ticket-badge" style="background:var(--rust);">▶️</div>
+      <div class="ticket-text">
+        <p class="name">YouTube</p>
+        <p class="desc">Videos cada domingo</p>
+      </div>
+      <div class="ticket-arrow">↗</div>
+    </a>
+
+    <a class="ticket" href="#" target="_blank" rel="noopener">
+      <div class="ticket-badge" style="background:var(--moss);">💬</div>
+      <div class="ticket-text">
+        <p class="name">Comunidad WhatsApp</p>
+        <p class="desc">Únete al día a día</p>
+      </div>
+      <div class="ticket-arrow">↗</div>
+    </a>
+
+    <a class="ticket" href="mailto:ijacs.colabs@hotmail.com">
+      <div class="ticket-badge" style="background:var(--gold);">📩</div>
+      <div class="ticket-text">
+        <p class="name">Colaboraciones</p>
+        <p class="desc">ijacs.colabs@hotmail.com</p>
+      </div>
+      <div class="ticket-arrow">↗</div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    <p>Actualizado · Julio 2026</p>
+  </div>
+
+</div>
+
+</body>
+</html>
